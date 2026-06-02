@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(const MyMessageBubble());
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class MyMessageBubble extends StatelessWidget {
-  const MyMessageBubble({super.key});
+  const MyMessageBubble({super.key, required this.message});
+
+  final Message message;
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +20,10 @@ class MyMessageBubble extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10 ),
-            child: Text('Qui nostrud deserunt et elit.', style: TextStyle(color: Colors.white),),
+            child: Text(message.text, style: const TextStyle(color: Colors.white),),
           ),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(height: 5),
       ],
     );
   }

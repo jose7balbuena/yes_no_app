@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MessageFieldBox());
-
 class MessageFieldBox extends StatelessWidget {
-  const MessageFieldBox({super.key});
+  final ValueChanged<String> onValue;
+
+  const MessageFieldBox({super.key, 
+  required this.onValue});
 
   @override
   Widget build(BuildContext context) {
-    
     final textController = TextEditingController();
     final focusNode = FocusNode();
 
@@ -28,11 +28,12 @@ class MessageFieldBox extends StatelessWidget {
         onPressed: () {
           final textValue = textController.value.text;
           textController.clear();
+          onValue(textValue);
         },
       ),
     );
 
-    return TextFormField(
+    return TextFormField( 
       onTapOutside: (event) {
         focusNode.unfocus();
       },
@@ -42,6 +43,7 @@ class MessageFieldBox extends StatelessWidget {
       onFieldSubmitted: (value) {
         textController.clear();
         focusNode.requestFocus();
+        onValue(value);
       },
     );
   }

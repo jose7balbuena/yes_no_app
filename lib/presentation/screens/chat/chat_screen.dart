@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/config/helpers/get_yes_no_anwser.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
+import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
 
-import '../../widgets/chat/her_message_bubble.dart';
-
-void main() => runApp(const ChatScreen());
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -16,7 +18,8 @@ class ChatScreen extends StatelessWidget {
         leading: const Padding(
           padding: EdgeInsets.all(4.0),
           child: CircleAvatar(
-          backgroundImage: NetworkImage('https://i.namu.wiki/i/oWoB2ySFz7tsEH86rs2IG-xFRcETLQV_1s2HNf9_asUEivmigOvQB4FCg1AJGIoAWBtWLZVnFU6_Fhgm5QXefl0fQP41YtsfmGd2nAfgvornbtXnnYLqmCbiqiGzsZNT4BlCBAHHno-bHX0TBcwTNSP0f3lZvEp3-Fi1tN7mXbA.webp'),
+            backgroundImage: NetworkImage(
+                'https://images.wallpapersden.com/image/download/megan-fox-hd-wallpapers_amVpbGuUmZqaraWkpJRnamtlrWZtbWc.jpg'),
           ),
         ),
         title: const Text('Chat Screen'),
@@ -26,27 +29,36 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
+
+/// Este widget se encarga de mostrar la vista del chat, es decir, la lista de mensajes y el campo de texto para enviar nuevos mensajes.
 class _ChatView extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
+final chatProvider = context.watch<ChatProvider>();
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            Expanded(child: ListView.builder(
-              itemCount: 100,
+            Expanded(
+                child: ListView.builder( 
+                  controller: chatProvider.chatScrollController,
+              itemCount: chatProvider.messages.length,
               itemBuilder: (context, index) {
-                return  (index % 2 == 0) ? const MyMessageBubble() : const HerMessageBubble();
+                final message = chatProvider.messages[index];
+                
+                return (message.fromWho == FromWho.other)
+                    ? HerMessageBubble(message: message)
+                    : MyMessageBubble(message: message);
               },
             )),
-            MessageFieldBox(),
+             MessageFieldBox(
+              onValue:  chatProvider.sendMessage,
+            ),
           ],
         ),
       ),
     );
-
   }
 }
